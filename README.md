@@ -16,7 +16,7 @@ import (
 func main() {
 	// 注册推送平台
 	p := postal.NewPostal(
-        //大写的字段都要填写
+		//大写的字段都要填写
 		&postal.Xtuis{Token: "your token"},
 		&postal.Dida{Account: "xxx@outlook.com", Password: "xxx"})
 	// 以协程向所有成功注册的平台发送消息
@@ -25,10 +25,7 @@ func main() {
 	p.Send("第二波", "ok")
 	p.Send("第三波", "ok")
 	p.Send("第四波", "ok")
-
-
 }
-
 
 ```
 
@@ -36,3 +33,4 @@ func main() {
 
 - [虾推啥](https://xtuis.cn/)
 - [滴答清单](https://www.dida365.com/)
+- [QQ邮箱](https://mail.qq.com/)
