@@ -60,8 +60,8 @@ func (p *Postal) Send(title, msg string) {
 	}
 
 	// 等待完成
-	// 平均最大给每个任务1秒的时间
-	timeout := time.Duration(taskNums*1) * time.Second
+	// 平均最大给每个任务3秒的时间
+	timeout := time.Duration(taskNums*3) * time.Second
 	select {
 	case <-p.done:
 		break

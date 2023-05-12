@@ -20,7 +20,7 @@ func main() {
 		&postal.Xtuis{Token: "your token"},
 		&postal.Dida{Account: "xxx@outlook.com", Password: "xxx"})
 	// 以协程向所有成功注册的平台发送消息
-	// 发送完毕就退出单个send最大阻塞时间为平台数*1s
+	// 发送完毕就退出单个send最大阻塞时间为平台数*3s
 	p.Send("tomygin", "nice!")
 	p.Send("第二波", "ok")
 	p.Send("第三波", "ok")

@@ -11,12 +11,13 @@ type QQMail struct {
 	AuthCode    string
 
 	auth smtp.Auth
+	//waitTime time.Duration
 }
 
 func (q *QQMail) Init() bool {
 	q.auth = smtp.PlainAuth("", q.SendAddr, q.AuthCode, "smtp.qq.com")
 
-	return q.auth == nil
+	return q.auth != nil
 }
 
 func (q *QQMail) Send(title, msg string) bool {
