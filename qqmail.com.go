@@ -3,6 +3,7 @@ package postal
 import (
 	"net/smtp"
 	"strings"
+	"time"
 )
 
 type QQMail struct {
@@ -28,6 +29,11 @@ func (q *QQMail) Send(title, msg string) bool {
 
 	err := smtp.SendMail("smtp.qq.com:25", q.auth, q.SendAddr, q.ReceiveAddr, content)
 	return err == nil
+
 }
+func (q *QQMail) WaitTime() time.Duration {
+	return time.Duration(3 * time.Second)
+}
+func (q *QQMail) Logout() {}
 
 var _ Msger = (*QQMail)(nil)

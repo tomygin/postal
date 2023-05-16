@@ -3,6 +3,7 @@ package postal
 import (
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type Xtuis struct {
@@ -20,5 +21,9 @@ func (x *Xtuis) Send(title, msg string) bool {
 	resp, ok := http.Get(url)
 	return resp.StatusCode == 200 && ok == nil
 }
+func (x *Xtuis) WaitTime() time.Duration {
+	return time.Duration(500 * time.Millisecond)
+}
+func (x *Xtuis) Logout() {}
 
 var _ Msger = (*Xtuis)(nil)

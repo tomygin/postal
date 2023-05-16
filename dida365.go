@@ -65,6 +65,11 @@ func (d *Dida) Send(title, msg string) bool {
 	return true
 }
 
+func (d *Dida) WaitTime() time.Duration {
+	return time.Duration(1 * time.Second)
+}
+func(d *Dida)Logout(){}
+
 var _ Msger = (*Dida)(nil)
 
 //---tool---

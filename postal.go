@@ -1,3 +1,9 @@
+/*
+postal 初始化所有的msger后会获得两个个方法
+
+	Send	以协程向所有注册成功的平台发送消息
+	Logout	最后处理退出，复用平台
+*/
 package postal
 
 import (
@@ -9,22 +15,29 @@ import (
 type Msger interface {
 	Init() bool
 	Send(title, msg string) bool
+	WaitTime() time.Duration
+	Logout()
 }
 
 // psotal保存所有告警消息的客户端
-type Postal struct {
-	msgers []Msger
-	done   chan struct{}
+type postal struct {
+	msgers   []Msger
+	badMsers []Msger
+	done     chan struct{}
 }
 
+//TODO 保存登录的信息，然后下次直接加载
+
 // NewPostal会根据当前给的配置信息去初始化每个告警客户端
-// 如果满足Msger接口并且初始化成功才会添加到postal
-func NewPostal(configMsgers ...Msger) *Postal {
-	postal := &Postal{msgers: make([]Msger, 0, 3), done: make(chan struct{}, 1)}
+// 如果满足Msger接口并且初始化成功才会添加到msgers
+func NewPostal(configMsgers ...Msger) *postal {
+	postal := &postal{msgers: make([]Msger, 0, 3), badMsers: make([]Msger, 0, 3), done: make(chan struct{}, 1)}
 	for _, msger := range configMsgers {
 
 		if msger.Init() {
 			postal.msgers = append(postal.msgers, msger)
+		} else {
+			postal.badMsers = append(postal.badMsers, msger)
 		}
 
 	}
@@ -32,12 +45,13 @@ func NewPostal(configMsgers ...Msger) *Postal {
 }
 
 // Send控制所有告警客户端发送告警信息
-func (p *Postal) Send(title, msg string) {
+func (p *postal) Send(title, msg string) {
 
 	var allTask sync.WaitGroup
-
 	taskNums := len(p.msgers)
 	allTask.Add(taskNums)
+
+	var timeout time.Duration
 
 	//检查是否完成
 	go func(done chan<- struct{}, w *sync.WaitGroup) {
@@ -45,23 +59,18 @@ func (p *Postal) Send(title, msg string) {
 		//开始等待
 		w.Wait()
 		p.done <- struct{}{}
-		// close(p.done)
-
 	}(p.done, &allTask)
 
 	for _, msger := range p.msgers {
+		timeout += msger.WaitTime()
 
 		go func(m Msger, w *sync.WaitGroup) {
 			m.Send(title, msg)
 			w.Done()
-
 		}(msger, &allTask)
-
 	}
 
 	// 等待完成
-	// 平均最大给每个任务3秒的时间
-	timeout := time.Duration(taskNums*3) * time.Second
 	select {
 	case <-p.done:
 		break
@@ -72,6 +81,13 @@ func (p *Postal) Send(title, msg string) {
 		fmt.Println("msger send msg timeout")
 	}
 
+}
+
+// Logout 退出所有平台
+func (p *postal) Logout() {
+	for i := range p.msgers {
+		p.msgers[i].Logout()
+	}
 }
 
 // Shutdown会等待所有的告警信息发送完成后再退出

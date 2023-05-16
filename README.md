@@ -7,25 +7,29 @@
 ```go
 package main
 
-import (
-	"time"
-
-	"github.com/tomygin/postal"
-)
+import "github.com/tomygin/postal"
 
 func main() {
 	// 注册推送平台
 	p := postal.NewPostal(
 		//大写的字段都要填写
-		&postal.Xtuis{Token: "your token"},
-		&postal.Dida{Account: "xxx@outlook.com", Password: "xxx"})
+		&postal.Xtuis{Token: "jTR6xWspfVyxxxasadsadHuisa"},
+		&postal.Dida{Account: "xxx@outlook.com", Password: "xxx"},
+
+		&postal.QQMail{SendAddr: "xxxx@foxmail.com",
+			AuthCode:    "my smtp code",
+			ReceiveAddr: []string{"xxxx@outlook.com", "xxxx@qq.com"}},
+	)
+
+	// 最后退出所有平台
+	defer p.Logout()
+
 	// 以协程向所有成功注册的平台发送消息
-	// 发送完毕就退出单个send最大阻塞时间为平台数*3s
 	p.Send("tomygin", "nice!")
-	p.Send("第二波", "ok")
-	p.Send("第三波", "ok")
-	p.Send("第四波", "ok")
+	p.Send("第1波", "ok")
+
 }
+
 
 ```
 
