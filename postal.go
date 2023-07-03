@@ -1,5 +1,9 @@
 /*
- */
+postal
+初始化完成后可以使用 Draft起草发送标题和内容以及最大等待时间
+起草完成后返回Sender接口变量
+可以调用Sender的Send方法开始发送，同时支持Cancel方法取消发送以及Wait方法用来阻塞等待
+*/
 package postal
 
 import (
