@@ -50,3 +50,6 @@ func main() {
 - [虾推啥](https://xtuis.cn/)
 - [滴答清单](https://www.dida365.com/)
 - [QQ邮箱](https://mail.qq.com/)
+
+### 必要信息
+- 虾推啥，滴答清单使用的是80端口，所以尽量不要服务也使用80，容易端口冲突
