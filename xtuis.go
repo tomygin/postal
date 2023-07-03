@@ -3,7 +3,6 @@ package postal
 import (
 	"fmt"
 	"net/http"
-	"time"
 )
 
 type Xtuis struct {
@@ -16,14 +15,12 @@ func (x *Xtuis) Init() bool {
 	return true
 }
 
-func (x *Xtuis) Send(title, msg string) bool {
+func (x *Xtuis) Msg(title, msg string) chan struct{} {
 	url := fmt.Sprintf(x.url, title, msg)
-	resp, ok := http.Get(url)
-	return resp.StatusCode == 200 && ok == nil
+	http.Get(url)
+	c := make(chan struct{}, 1)
+	c <- struct{}{}
+	return c
 }
-func (x *Xtuis) WaitTime() time.Duration {
-	return time.Duration(500 * time.Millisecond)
-}
-func (x *Xtuis) Logout() {}
 
 var _ Msger = (*Xtuis)(nil)

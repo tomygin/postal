@@ -1,10 +1,3 @@
-
-
-## 消息提醒
-
-尽量用最少的依赖，实现的多平台消息提醒，一键推送，总有一个是你需要的😋
-
-```go
 package main
 
 import (
@@ -16,7 +9,6 @@ import (
 func main() {
 
 	//初始化发射站
-    //大写的字段都必须填写
 	p := postal.NewPostal(
 		&postal.Xtuis{
 			Token: "token",
@@ -42,11 +34,3 @@ func main() {
 	//等待取消，否则会阻塞在这里
 	s.Wait()
 }
-
-```
-
-### 目前接入的平台
-
-- [虾推啥](https://xtuis.cn/)
-- [滴答清单](https://www.dida365.com/)
-- [QQ邮箱](https://mail.qq.com/)

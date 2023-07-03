@@ -3,7 +3,6 @@ package postal
 import (
 	"net/smtp"
 	"strings"
-	"time"
 )
 
 type QQMail struct {
@@ -12,7 +11,6 @@ type QQMail struct {
 	AuthCode    string
 
 	auth smtp.Auth
-	//waitTime time.Duration
 }
 
 func (q *QQMail) Init() bool {
@@ -21,19 +19,17 @@ func (q *QQMail) Init() bool {
 	return q.auth != nil
 }
 
-func (q *QQMail) Send(title, msg string) bool {
+func (q *QQMail) Msg(title, msg string) (c chan struct{}) {
 	nickName := "Notify"
 	contentType := "Content-Type:text/plain;charset=UTF-8\r\n"
 	content := []byte("To: " + strings.Join(q.ReceiveAddr, ",") + "\r\nFrom: " + nickName +
 		"<" + q.SendAddr + ">\r\nSubject: " + title + "\r\n" + contentType + "\r\n\r\n" + msg)
 
-	err := smtp.SendMail("smtp.qq.com:25", q.auth, q.SendAddr, q.ReceiveAddr, content)
-	return err == nil
+	smtp.SendMail("smtp.qq.com:25", q.auth, q.SendAddr, q.ReceiveAddr, content)
+	c = make(chan struct{}, 1)
+	c <- struct{}{}
+	return
 
 }
-func (q *QQMail) WaitTime() time.Duration {
-	return time.Duration(3 * time.Second)
-}
-func (q *QQMail) Logout() {}
 
 var _ Msger = (*QQMail)(nil)

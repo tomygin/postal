@@ -57,18 +57,15 @@ func (d *Dida) Init() bool {
 	return true
 }
 
-func (d *Dida) Send(title, msg string) bool {
+func (d *Dida) Msg(title, msg string) chan struct{} {
 	url := `https://api.dida365.com/api/v2/batch/task`
 	data := didaJsonTmp(title, msg, d.inboxId)
 
 	d.req("POST", data, url)
-	return true
+	c := make(chan struct{}, 1)
+	c <- struct{}{}
+	return c
 }
-
-func (d *Dida) WaitTime() time.Duration {
-	return time.Duration(1 * time.Second)
-}
-func(d *Dida)Logout(){}
 
 var _ Msger = (*Dida)(nil)
 
