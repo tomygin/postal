@@ -15,7 +15,7 @@ import (
 
 func main() {
 
-	//初始化发射站
+	    //初始化发射站
     //大写的字段都必须填写
 	p := postal.NewPostal(
 		&postal.Xtuis{
@@ -45,11 +45,11 @@ func main() {
 
 ```
 
-### 目前接入的平台
+### 目前接入的平台和端口
 
-- [虾推啥](https://xtuis.cn/)
-- [滴答清单](https://www.dida365.com/)
-- [QQ邮箱](https://mail.qq.com/)
+- [虾推啥](https://xtuis.cn/)80
+- [滴答清单](https://www.dida365.com/)80
+- [QQ邮箱](https://mail.qq.com/)25
 
 ### 必要信息
-- 虾推啥，滴答清单使用的是80端口，所以尽量不要服务也使用80，容易端口冲突
+为了防止端口冲突，请不要将部署的服务和接入消息平台的端口一致
