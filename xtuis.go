@@ -6,6 +6,7 @@ import (
 )
 
 type Xtuis struct {
+ _     [0]int //让初始化的时候必须指明字段
 	Token string
 	url   string
 }
