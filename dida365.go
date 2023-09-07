@@ -12,12 +12,15 @@ import (
 )
 
 type Dida struct {
+	_ [0]int //让初始化的时候必须指明字段
+
 	Account  string
 	Password string
 
 	client  *http.Client
 	header  map[string]string
 	inboxId string //默认收件箱
+
 }
 
 func (d *Dida) Init() bool {

@@ -8,6 +8,7 @@ package postal
 
 import (
 	"context"
+	"reflect"
 	"time"
 )
 
@@ -30,11 +31,15 @@ type Msger interface {
 type postal struct {
 	msgers   []Msger
 	badMsers []Msger
-	ctx      context.Context
-	cancel   context.CancelFunc
+
+	ctx    context.Context
+	cancel context.CancelFunc
 
 	title string
 	msg   string
+
+	badInitMsers  []string
+	msgerSendDone []string
 }
 
 func NewPostal(msgers ...Msger) *postal {
@@ -52,6 +57,7 @@ func NewPostal(msgers ...Msger) *postal {
 			p.msgers = append(p.msgers, msger)
 		} else {
 			p.badMsers = append(p.badMsers, msger)
+			p.badInitMsers = append(p.badInitMsers, name(msger))
 		}
 	}
 	return p
@@ -63,6 +69,7 @@ func (p *postal) Send() {
 			select {
 			case <-p.ctx.Done():
 			case <-p.msgers[num].Msg(p.title, p.msg):
+				p.msgerSendDone = append(p.msgerSendDone, name(p.msgers[num]))
 			}
 		}(p, num)
 	}
@@ -87,10 +94,24 @@ func (p *postal) Draft(title, msg string, timeOut ...time.Duration) Sender {
 		p.cancel()
 	}
 
+	//清理发送状态
+	p.msgerSendDone = nil
+
 	p.ctx, p.cancel = context.WithTimeout(context.Background(), timeOut[0])
 
 	p.msg = msg
 	p.title = title
 
 	return p
+}
+
+// Status 查看当前postal中的状态
+func (p *postal) Status() (bad []string, done []string) {
+
+	return p.badInitMsers, p.msgerSendDone
+}
+
+func name(o interface{}) string {
+	oValue := reflect.Indirect(reflect.ValueOf(o))
+	return oValue.Type().Name()
 }

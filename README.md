@@ -8,6 +8,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/tomygin/postal"
@@ -15,16 +16,14 @@ import (
 
 func main() {
 
-	    //初始化发射站
-    //大写的字段都必须填写
+	//初始化发射站
 	p := postal.NewPostal(
-		&postal.Xtuis{
-			Token: "token",
+		&postal.Dida{
+			Account:  "tomygin@outlook.com",
+			Password: "3-wM.a5fZY3XU7G",
+		}, &postal.Xtuis{
+			Token: "error",
 		},
-		&postal.QQMail{
-			SendAddr:    "xxxx@xx.com",
-			ReceiveAddr: []string{"xxxx@xx.com"},
-			AuthCode:    "codexxx"},
 	)
 
 	//起草一个信息，如果成功起草将结束之前的发射
@@ -41,6 +40,10 @@ func main() {
 
 	//等待取消，否则会阻塞在这里
 	s.Wait()
+
+	//查看发送情况
+	fmt.Println(p.Status())
+
 }
 
 ```
@@ -53,7 +56,3 @@ func main() {
 
 ### 必要信息
 为了防止端口冲突，请不要将部署的服务和接入消息平台的端口一致
-
-### 下期预告
-1.添加status接口，随时查看postal状态
-2.增加英文文档

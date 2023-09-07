@@ -6,6 +6,8 @@ import (
 )
 
 type QQMail struct {
+	_ [0]int //让初始化的时候必须指明字段
+
 	SendAddr    string
 	ReceiveAddr []string
 	AuthCode    string

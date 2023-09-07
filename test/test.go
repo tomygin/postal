@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/tomygin/postal"
@@ -10,13 +11,12 @@ func main() {
 
 	//初始化发射站
 	p := postal.NewPostal(
-		&postal.Xtuis{
-			Token: "token",
+		&postal.Dida{
+			Account:  "xxxx",
+			Password: "xxxx",
+		}, &postal.Xtuis{
+			Token: "xxxx",
 		},
-		&postal.QQMail{
-			SendAddr:    "xxxx@xx.com",
-			ReceiveAddr: []string{"xxxx@xx.com"},
-			AuthCode:    "codexxx"},
 	)
 
 	//起草一个信息，如果成功起草将结束之前的发射
@@ -33,4 +33,8 @@ func main() {
 
 	//等待取消，否则会阻塞在这里
 	s.Wait()
+
+	//查看发送情况
+	fmt.Println(p.Status())
+
 }
