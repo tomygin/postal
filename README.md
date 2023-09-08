@@ -19,10 +19,10 @@ func main() {
 	//初始化发射站
 	p := postal.NewPostal(
 		&postal.Dida{
-			Account:  "tomygin@outlook.com",
-			Password: "3-wM.a5fZY3XU7G",
+			Account:  "xxxx",
+			Password: "xxxx",
 		}, &postal.Xtuis{
-			Token: "error",
+			Token: "xxxx",
 		},
 	)
 
@@ -43,6 +43,13 @@ func main() {
 
 	//查看发送情况
 	fmt.Println(p.Status())
+
+	//添加
+	p.AddMsger(&postal.QQMail{
+		SendAddr:    "xxx",
+		ReceiveAddr: []string{"xxx"},
+		AuthCode:    "xxx",
+	})
 
 }
 

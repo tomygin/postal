@@ -37,4 +37,11 @@ func main() {
 	//查看发送情况
 	fmt.Println(p.Status())
 
+	//添加
+	p.AddMsger(&postal.QQMail{
+		SendAddr:    "xxx",
+		ReceiveAddr: []string{"xxx"},
+		AuthCode:    "xxx",
+	})
+
 }

@@ -115,3 +115,11 @@ func name(o interface{}) string {
 	oValue := reflect.Indirect(reflect.ValueOf(o))
 	return oValue.Type().Name()
 }
+
+// AddMsger 初始化后再再添加消息客户端
+func (p *postal) AddMsger(msgers ...Msger) {
+	new_p := NewPostal(msgers...)
+	p.msgers = append(p.msgers, new_p.msgers...)
+	p.badMsers = append(p.badMsers, new_p.badMsers...)
+	p.badInitMsers = append(p.badInitMsers, new_p.badInitMsers...)
+}
