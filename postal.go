@@ -15,10 +15,12 @@ import (
 // Sender是用户调用接口
 // Sender内部的Send方法用于统一发送
 // Wait方法就会阻塞等待直到超时或者发送完成
+// SignOut如果客户端有退出方法，执行客户端的退出
 type Sender interface {
 	Send()
 	Wait()
 	Cancel()
+	SignOut(force bool)
 }
 
 // Msger是所有发送消息的平台应该满足的接口
@@ -77,7 +79,17 @@ func (p *postal) Send() {
 }
 
 func (p *postal) Wait() {
-	<-p.ctx.Done()
+	for {
+		select {
+		case <-p.ctx.Done():
+			return
+		default:
+			if len(p.msgerSendDone) == len(p.msgers) {
+				return
+			}
+			time.Sleep(5 * time.Millisecond)
+		}
+	}
 }
 
 func (p *postal) Cancel() {
@@ -122,4 +134,21 @@ func (p *postal) AddMsger(msgers ...Msger) {
 	p.msgers = append(p.msgers, new_p.msgers...)
 	p.badMsers = append(p.badMsers, new_p.badMsers...)
 	p.badInitMsers = append(p.badInitMsers, new_p.badInitMsers...)
+}
+
+// 如果客户端需要执行退出，方法的名字必须是SignOutMethodName
+const SignOutMethodName = "SignOut"
+
+// SignOut 如果消息客户端有这个方法就调用，是可选的
+func (p *postal) SignOut(force bool) {
+	if force {
+		p.Cancel()
+	}
+	p.Wait()
+	for _, m := range p.msgers {
+		mValue := reflect.ValueOf(m)
+		if fm := mValue.MethodByName(SignOutMethodName); fm.IsValid() {
+			fm.Call(nil)
+		}
+	}
 }

@@ -72,9 +72,14 @@ func (d *Dida) Msg(title, msg string) chan struct{} {
 
 var _ Msger = (*Dida)(nil)
 
+func (d *Dida) SignOut() error {
+	_, err := d.req("GET", nil, "https://www.dida365.com/signout")
+	return err
+}
+
 //---tool---
 
-func dida_use_one_id() string {
+func didaPostItenId() string {
 	tmp := strings.Repeat("abcdef0123456789", 3)
 	b := []byte(tmp)
 	id := make([]byte, 24)
@@ -85,13 +90,13 @@ func dida_use_one_id() string {
 
 }
 
-func dida_use_one_utc_time() string {
+func didaUtcTime() string {
 	template := "2006-01-02T%15:04:05.000+0000"
 	return time.Now().Format(template)
 }
 
 func didaJsonTmp(title, content, inboxId string) []byte {
-	currTime := dida_use_one_utc_time()
+	currTime := didaUtcTime()
 	tmp := make(map[string]interface{})
 	addtask := map[string]interface{}{
 		`items`:        []interface{}{},
@@ -111,7 +116,7 @@ func didaJsonTmp(title, content, inboxId string) []byte {
 		`title`:        title,
 		`tags`:         []interface{}{},
 		`timeZone`:     `Asia/Shanghai`,
-		`id`:           dida_use_one_id(),
+		`id`:           didaPostItenId(),
 		`content`:      content,
 	}
 	add := make([]map[string]interface{}, 1)
